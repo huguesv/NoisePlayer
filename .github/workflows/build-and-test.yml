@@ -1,0 +1,34 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+
+    runs-on: ${{ matrix.os }}
+    env:
+      solutionFile: src/NoisePlayer.slnx
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+    - name: Clean
+      run: dotnet clean ${{env.solutionFile}} --configuration Release && dotnet nuget locals all --clear
+    - name: Build
+      run: dotnet build ${{env.solutionFile}} --configuration Release
+    - name: Format
+      run: dotnet format ${{env.solutionFile}} --verify-no-changes --verbosity diagnostic
+    - name: Test
+      run: dotnet test ${{env.solutionFile}} --no-restore --verbosity normal

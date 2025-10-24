@@ -1,0 +1,73 @@
+name: Publish
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    name: Build
+    strategy:
+      matrix:
+        dotnet-runtime: [win-x64, win-arm64, win-x86, linux-x64, linux-arm64, osx-x64, osx-arm64]
+    runs-on: ubuntu-latest
+    env:
+      desktopBinariesName: Woohoo.Noise.Player-${{ github.event.release.tag_name }}-${{ matrix.dotnet-runtime }}
+      consoleBinariesName: Woohoo.Noise.Player.Cli-${{ github.event.release.tag_name }}-${{ matrix.dotnet-runtime }}
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+
+    - name: Desktop App - Build / Publish
+      run: dotnet publish src/Woohoo.Noise.Player/Woohoo.Noise.Player.csproj -f net9.0 -r ${{ matrix.dotnet-runtime }} -c Release --self-contained -p:PublishSingleFile=true -p:DebugType=None -p:DebugSymbols=False
+
+    - name: Console App - Build / Publish
+      run: dotnet publish src/Woohoo.Noise.Player.Cli/Woohoo.Noise.Player.Cli.csproj -f net9.0 -r ${{ matrix.dotnet-runtime }} -c Release --self-contained -p:PublishSingleFile=true -p:DebugType=None -p:DebugSymbols=False
+
+    - name: Desktop App - Zip binaries
+      working-directory: ${{ github.workspace }}/bin/Release/Woohoo.Noise.Player/net9.0/${{ matrix.dotnet-runtime }}/publish
+      run: zip -r ${{ github.workspace }}/bin/Release/Woohoo.Noise.Player/net9.0/${{ env.desktopBinariesName }}.zip *
+
+    - name: Console App - Zip binaries
+      working-directory: ${{ github.workspace }}/bin/Release/Woohoo.Noise.Player.Cli/net9.0/${{ matrix.dotnet-runtime }}/publish
+      run: zip -r ${{ github.workspace }}/bin/Release/Woohoo.Noise.Player.Cli/net9.0/${{ env.consoleBinariesName }}.zip *
+
+    - name: Desktop App - Upload binaries artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: desktop-${{ matrix.dotnet-runtime }}
+        path: bin/Release/Woohoo.Noise.Player/net9.0/${{ env.desktopBinariesName }}.zip
+
+    - name: Console App - Upload binaries artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: console-${{ matrix.dotnet-runtime }}
+        path: bin/Release/Woohoo.Noise.Player.Cli/net9.0/${{ env.consoleBinariesName }}.zip
+
+  release:
+    name: Upload Release Assets
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - name: Download binaries artifacts for all runtimes
+      uses: actions/download-artifact@v4
+      with:
+        path: release-artifacts
+        merge-multiple: true
+
+    - name: Display downloaded artifacts
+      run: ls -R release-artifacts
+
+    - name: Upload to release
+      uses: softprops/action-gh-release@v2
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files: |
+          release-artifacts/*

@@ -1,0 +1,16 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="../LICENSE" />
+    <File Path="../README.md" />
+    <File Path="Common/Common.AssemblyInfo.cs" />
+    <File Path="Common/stylecop.json" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Project Path="Woohoo.Noise.Core.UnitTest/Woohoo.Noise.Core.UnitTest.csproj" Id="bb0a2c06-ab43-4030-bcef-e5553fafe74d" />
+  <Project Path="Woohoo.Noise.Core/Woohoo.Noise.Core.csproj" />
+  <Project Path="Woohoo.Noise.Playback/Woohoo.Noise.Playback.csproj" Id="7b1d6671-fc25-4d5d-bba1-9c733b31da99" />
+  <Project Path="Woohoo.Noise.Player.Cli/Woohoo.Noise.Player.Cli.csproj" Id="ea60db38-cb34-4b5b-9eb3-8355710fd154" />
+  <Project Path="Woohoo.Noise.Player/Woohoo.Noise.Player.csproj" Id="acfb6212-c7d5-422c-ad7e-f0699f92720c" />
+  <Project Path="Woohoo.Sdl3/Woohoo.Sdl3.csproj" />
+</Solution>

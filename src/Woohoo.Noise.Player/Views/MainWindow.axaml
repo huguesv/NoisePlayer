@@ -1,0 +1,90 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Woohoo.Noise.Player.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        x:Class="Woohoo.Noise.Player.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Width="500"
+        Height="400"
+        d:DesignHeight="400"
+        d:DesignWidth="500"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Noise Player">
+
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+        to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="avares://Woohoo.Noise.Player/Views/MediaIcons.axaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid RowDefinitions="*,Auto">
+
+        <TextBlock Margin="20" Text="{Binding CurrentTrackTitle}" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+        <StackPanel Margin="20" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10">
+            <Button
+                MinWidth="40"
+                MinHeight="40"
+                Margin="5"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                AutomationProperties.Name="Previous"
+                Command="{Binding PreviousTrackCommand}"
+                ToolTip.Tip="Previous Track">
+                <Canvas Width="32" Height="32">
+                    <StaticResource ResourceKey="Previous" />
+                </Canvas>
+            </Button>
+
+            <Button
+                MinWidth="40"
+                MinHeight="40"
+                Margin="5"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                AutomationProperties.Name="Play/Pause"
+                Command="{Binding PlayPauseCommand}"
+                ToolTip.Tip="Play/Pause">
+                <Grid>
+                    <Canvas
+                        Width="32"
+                        Height="32"
+                        IsVisible="{Binding !IsPlaying}">
+                        <StaticResource ResourceKey="Play" />
+                    </Canvas>
+                    <Canvas
+                        Width="32"
+                        Height="32"
+                        IsVisible="{Binding IsPlaying}">
+                        <StaticResource ResourceKey="Stop" />
+                    </Canvas>
+                </Grid>
+            </Button>
+
+            <Button
+                MinWidth="40"
+                MinHeight="40"
+                Margin="5"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                AutomationProperties.Name="Next"
+                Command="{Binding NextTrackCommand}"
+                ToolTip.Tip="Next Track">
+                <Canvas Width="32" Height="32">
+                    <StaticResource ResourceKey="Next" />
+                </Canvas>
+            </Button>
+
+        </StackPanel>
+    </Grid>
+
+</Window>
