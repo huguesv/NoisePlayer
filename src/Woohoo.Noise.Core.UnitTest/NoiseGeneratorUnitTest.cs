@@ -5,17 +5,24 @@ namespace Woohoo.Noise.Core.UnitTest;
 
 public class NoiseGeneratorUnitTest
 {
-    [Fact]
-    public void Generate()
+    [Theory]
+    [InlineData(NoiseType.White)]
+    [InlineData(NoiseType.Brown)]
+    [InlineData(NoiseType.Pink)]
+    [InlineData(NoiseType.Blue)]
+    [InlineData(NoiseType.Violet)]
+    [InlineData(NoiseType.Gray)]
+    public void Generate(NoiseType noiseType)
     {
+        // Arrange
         var length = 1024;
         var noise = new float[length];
-        foreach (var noiseType in Enum.GetValues<NoiseType>())
-        {
-            NoiseGenerator.Generate(noise, length, noiseType);
 
-            // Basic check: ensure that noise array is not all zeros
-            Assert.Contains(noise, value => value != 0.0f);
-        }
+        // Act
+        NoiseGenerator.Generate(noise, length, noiseType);
+
+        // Assert
+        noise.Should().OnlyContain(value => value >= -3.0f && value <= 3.0f);
+        noise.Where(value => Math.Abs(value) < 0.0001f).Should().HaveCountLessThan(length);
     }
 }
