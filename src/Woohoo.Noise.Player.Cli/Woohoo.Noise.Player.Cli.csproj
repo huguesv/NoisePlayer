@@ -22,9 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Woohoo.Noise.Core\Woohoo.Noise.Core.csproj" />
     <ProjectReference Include="..\Woohoo.Noise.Playback\Woohoo.Noise.Playback.csproj" />
-    <ProjectReference Include="..\Woohoo.Sdl3\Woohoo.Sdl3.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -24,12 +24,6 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private int currentTrack;
 
-    [ObservableProperty]
-    public partial string CurrentTrackTitle { get; set; } = string.Empty;
-
-    [ObservableProperty]
-    public partial bool IsPlaying { get; set; }
-
     public MainWindowViewModel()
     {
         this.CurrentTrackTitle = Tracks[this.currentTrack].Title;
@@ -39,6 +33,12 @@ public partial class MainWindowViewModel : ViewModelBase
             Noise = Tracks[this.currentTrack].Type,
         };
     }
+
+    [ObservableProperty]
+    public partial string CurrentTrackTitle { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial bool IsPlaying { get; set; }
 
     [RelayCommand]
     private void PlayPause()
