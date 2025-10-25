@@ -11,28 +11,29 @@ public static class NoiseGenerator
     private static readonly Random Rand = new();
     private static float lastBrown = 0.0f;
     private static float lastWhite = 0.0f;
+    private static float[] pinkBuffer = new float[7];
 
     public static void Generate(float[] noise, int length, NoiseType noiseType)
     {
         switch (noiseType)
         {
             case NoiseType.White:
-                GenerateWhiteNoise(noise, length);
+                GenerateWhiteNoise(noise, length, amplitude: 0.5f);
                 break;
             case NoiseType.Brown:
-                GenerateBrownNoise(noise, length);
+                GenerateBrownNoise(noise, length, amplitude: 0.5f);
                 break;
             case NoiseType.Pink:
                 GeneratePinkNoise(noise, length, amplitude: 0.5f);
                 break;
             case NoiseType.Blue:
-                GenerateBlueNoise(noise, length);
+                GenerateBlueNoise(noise, length, amplitude: 0.5f);
                 break;
             case NoiseType.Violet:
-                GenerateVioletNoise(noise, length);
+                GenerateVioletNoise(noise, length, amplitude: 0.5f);
                 break;
             case NoiseType.Gray:
-                GenerateGrayNoise(noise, length);
+                GenerateGrayNoise(noise, length, amplitude: 0.5f);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(noiseType), noiseType, null);
@@ -43,7 +44,8 @@ public static class NoiseGenerator
     {
         for (var i = 0; i < length; i++)
         {
-            noise[i] = (float)((Rand.NextDouble() * 2.0) - 1.0) * amplitude;
+            var white = (float)((Rand.NextDouble() * 2.0) - 1.0);
+            noise[i] = white * amplitude;
         }
     }
 
@@ -51,25 +53,28 @@ public static class NoiseGenerator
     {
         for (var i = 0; i < length; i++)
         {
-            var white = (float)((Rand.NextDouble() * 2.0) - 1.0) * amplitude;
+            var white = (float)((Rand.NextDouble() * 2.0) - 1.0);
             lastBrown += white * 0.02f; // Smoothing factor
-            noise[i] = lastBrown;
+            lastBrown = Math.Clamp(lastBrown, -1.0f, 1.0f);
+            lastBrown *= 0.998f; // Pulling factor
+            noise[i] = lastBrown * amplitude;
         }
     }
 
     public static void GeneratePinkNoise(float[] noise, int length, float amplitude = 1.0f)
     {
-        var b = new float[7];
         for (var i = 0; i < length; i++)
         {
-            var white = (float)((Rand.NextDouble() * 2.0) - 1.0) * amplitude;
-            b[0] = (0.99886f * b[0]) + (white * 0.0555179f);
-            b[1] = (0.99332f * b[1]) + (white * 0.0750759f);
-            b[2] = (0.96900f * b[2]) + (white * 0.1538520f);
-            b[3] = (0.86650f * b[3]) + (white * 0.3104856f);
-            b[4] = (0.55000f * b[4]) + (white * 0.5329522f);
-            b[5] = (-0.7616f * b[5]) - (white * 0.0168980f);
-            noise[i] = b.Sum() + (white * 0.5362f);
+            var white = (float)((Rand.NextDouble() * 2.0) - 1.0);
+            pinkBuffer[0] = (0.99886f * pinkBuffer[0]) + (white * 0.0555179f);
+            pinkBuffer[1] = (0.99332f * pinkBuffer[1]) + (white * 0.0750759f);
+            pinkBuffer[2] = (0.96900f * pinkBuffer[2]) + (white * 0.1538520f);
+            pinkBuffer[3] = (0.86650f * pinkBuffer[3]) + (white * 0.3104856f);
+            pinkBuffer[4] = (0.55000f * pinkBuffer[4]) + (white * 0.5329522f);
+            pinkBuffer[5] = (-0.7616f * pinkBuffer[5]) - (white * 0.0168980f);
+            double pink = pinkBuffer.Sum() + (white * 0.5362f);
+            pinkBuffer[6] = white * 0.115926f;
+            noise[i] = (float)(pink / 5.0f * amplitude);
         }
     }
 
