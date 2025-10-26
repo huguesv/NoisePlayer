@@ -15,7 +15,6 @@ internal class Program
         { 'P', ("Pink", NoiseType.Pink) },
         { 'L', ("Blue", NoiseType.Blue) },
         { 'V', ("Violet", NoiseType.Violet) },
-        { 'G', ("Gray", NoiseType.Gray) },
     };
 
     private static void Main(string[] args)
@@ -24,7 +23,7 @@ internal class Program
         Console.WriteLine();
 
         Console.WriteLine("Select noise or [Q]uit:");
-        Console.WriteLine("[W]hite, [B]rown, [P]ink, b[L]ue, [V]iolet, [G]ray");
+        Console.WriteLine("[W]hite, [B]rown, [P]ink, b[L]ue, [V]iolet");
         Console.WriteLine();
 
         try

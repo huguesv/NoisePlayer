@@ -6,104 +6,125 @@ namespace Woohoo.Noise.Core;
 using System;
 using System.Linq;
 
-public static class NoiseGenerator
+public sealed class NoiseGenerator : ISampleProvider
 {
-    private static readonly Random Rand = new();
-    private static float lastBrown = 0.0f;
-    private static float lastWhite = 0.0f;
-    private static float[] pinkBuffer = new float[7];
+    private readonly Random randomizer = new();
+    private readonly float[] pinkBuffer = new float[7];
+    private float lastBrown = 0.0f;
+    private float lastWhite = 0.0f;
 
-    public static void Generate(float[] noise, int length, NoiseType noiseType)
+    public NoiseGenerator(NoiseType noiseType, float amplitude)
     {
-        switch (noiseType)
+        this.NoiseType = noiseType;
+        this.Amplitude = amplitude;
+    }
+
+    public NoiseType NoiseType { get; }
+
+    public float Amplitude { get; }
+
+    public int Read(float[] buffer, int offset, int count)
+    {
+        switch (this.NoiseType)
         {
             case NoiseType.White:
-                GenerateWhiteNoise(noise, length, amplitude: 0.5f);
+                this.GenerateWhiteNoise(buffer, offset, count);
                 break;
             case NoiseType.Brown:
-                GenerateBrownNoise(noise, length, amplitude: 0.5f);
+                this.GenerateBrownNoise(buffer, offset, count);
                 break;
             case NoiseType.Pink:
-                GeneratePinkNoise(noise, length, amplitude: 0.5f);
+                this.GeneratePinkNoise(buffer, offset, count);
                 break;
             case NoiseType.Blue:
-                GenerateBlueNoise(noise, length, amplitude: 0.5f);
+                this.GenerateBlueNoise(buffer, offset, count);
                 break;
             case NoiseType.Violet:
-                GenerateVioletNoise(noise, length, amplitude: 0.5f);
+                this.GenerateVioletNoise(buffer, offset, count);
                 break;
             case NoiseType.Gray:
-                GenerateGrayNoise(noise, length, amplitude: 0.5f);
+                this.GenerateGrayNoise(buffer, offset, count);
                 break;
             default:
-                throw new ArgumentOutOfRangeException(nameof(noiseType), noiseType, null);
+                Debug.Assert(false, "Unexpected noise type");
+                throw new InvalidOperationException();
+        }
+
+        return count;
+    }
+
+    private void GenerateWhiteNoise(float[] buffer, int offset, int count)
+    {
+        for (var i = 0; i < count; i++)
+        {
+            buffer[offset + i] = this.GetNextNormalizedFloat() * this.Amplitude;
         }
     }
 
-    public static void GenerateWhiteNoise(float[] noise, int length, float amplitude = 1.0f)
+    private void GenerateBrownNoise(float[] buffer, int offset, int count)
     {
-        for (var i = 0; i < length; i++)
+        for (var i = 0; i < count; i++)
         {
-            var white = (float)((Rand.NextDouble() * 2.0) - 1.0);
-            noise[i] = white * amplitude;
+            var white = this.GetNextNormalizedFloat();
+
+            this.lastBrown += white * 0.02f; // Smoothing factor
+            this.lastBrown = Math.Clamp(this.lastBrown, -1.0f, 1.0f);
+            this.lastBrown *= 0.998f; // Pulling factor
+            buffer[offset + i] = this.lastBrown * this.Amplitude;
         }
     }
 
-    public static void GenerateBrownNoise(float[] noise, int length, float amplitude = 1.0f)
+    private void GeneratePinkNoise(float[] buffer, int offset, int count)
     {
-        for (var i = 0; i < length; i++)
+        for (var i = 0; i < count; i++)
         {
-            var white = (float)((Rand.NextDouble() * 2.0) - 1.0);
-            lastBrown += white * 0.02f; // Smoothing factor
-            lastBrown = Math.Clamp(lastBrown, -1.0f, 1.0f);
-            lastBrown *= 0.998f; // Pulling factor
-            noise[i] = lastBrown * amplitude;
+            var white = this.GetNextNormalizedFloat();
+
+            this.pinkBuffer[0] = (0.99886f * this.pinkBuffer[0]) + (white * 0.0555179f);
+            this.pinkBuffer[1] = (0.99332f * this.pinkBuffer[1]) + (white * 0.0750759f);
+            this.pinkBuffer[2] = (0.96900f * this.pinkBuffer[2]) + (white * 0.1538520f);
+            this.pinkBuffer[3] = (0.86650f * this.pinkBuffer[3]) + (white * 0.3104856f);
+            this.pinkBuffer[4] = (0.55000f * this.pinkBuffer[4]) + (white * 0.5329522f);
+            this.pinkBuffer[5] = (-0.7616f * this.pinkBuffer[5]) - (white * 0.0168980f);
+            double pink = this.pinkBuffer.Sum() + (white * 0.5362f);
+            this.pinkBuffer[6] = white * 0.115926f;
+            buffer[offset + i] = (float)(pink / 5.0f * this.Amplitude);
         }
     }
 
-    public static void GeneratePinkNoise(float[] noise, int length, float amplitude = 1.0f)
+    private void GenerateBlueNoise(float[] buffer, int offset, int count)
     {
-        for (var i = 0; i < length; i++)
+        for (var i = 0; i < count; i++)
         {
-            var white = (float)((Rand.NextDouble() * 2.0) - 1.0);
-            pinkBuffer[0] = (0.99886f * pinkBuffer[0]) + (white * 0.0555179f);
-            pinkBuffer[1] = (0.99332f * pinkBuffer[1]) + (white * 0.0750759f);
-            pinkBuffer[2] = (0.96900f * pinkBuffer[2]) + (white * 0.1538520f);
-            pinkBuffer[3] = (0.86650f * pinkBuffer[3]) + (white * 0.3104856f);
-            pinkBuffer[4] = (0.55000f * pinkBuffer[4]) + (white * 0.5329522f);
-            pinkBuffer[5] = (-0.7616f * pinkBuffer[5]) - (white * 0.0168980f);
-            double pink = pinkBuffer.Sum() + (white * 0.5362f);
-            pinkBuffer[6] = white * 0.115926f;
-            noise[i] = (float)(pink / 5.0f * amplitude);
+            var white = this.GetNextNormalizedFloat() * this.Amplitude;
+            buffer[offset + i] = white - this.lastWhite;
+            this.lastWhite = white;
         }
     }
 
-    public static void GenerateBlueNoise(float[] noise, int length, float amplitude = 1.0f)
+    private void GenerateVioletNoise(float[] buffer, int offset, int count)
     {
-        for (var i = 0; i < length; i++)
+        for (var i = 0; i < count; i++)
         {
-            var white = (float)((Rand.NextDouble() * 2.0) - 1.0) * amplitude;
-            noise[i] = white - lastWhite;
-            lastWhite = white;
+            var white = this.GetNextNormalizedFloat() * this.Amplitude;
+            buffer[offset + i] = white - (2 * this.lastWhite);
+            this.lastWhite = white;
         }
     }
 
-    public static void GenerateVioletNoise(float[] noise, int length, float amplitude = 1.0f)
+    private void GenerateGrayNoise(float[] buffer, int offset, int count)
     {
-        for (var i = 0; i < length; i++)
+        // This doesn't work well, it causes popping sounds.
+        // Probably due to the buffer count being small.
+        for (var i = 0; i < count; i++)
         {
-            var white = (float)((Rand.NextDouble() * 2.0) - 1.0) * amplitude;
-            noise[i] = white - (2 * lastWhite);
-            lastWhite = white;
+            var white = this.GetNextNormalizedFloat() * this.Amplitude;
+            buffer[offset + i] = white * (1.0f - ((float)Math.Log10(i + 1) / (float)Math.Log10(count)));
         }
     }
 
-    public static void GenerateGrayNoise(float[] noise, int length, float amplitude = 1.0f)
+    private float GetNextNormalizedFloat()
     {
-        for (var i = 0; i < length; i++)
-        {
-            var white = (float)((Rand.NextDouble() * 2.0) - 1.0) * amplitude;
-            noise[i] = white * (1.0f - ((float)Math.Log10(i + 1) / (float)Math.Log10(length)));
-        }
+        return (float)((this.randomizer.NextDouble() * 2.0) - 1.0);
     }
 }

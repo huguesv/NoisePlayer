@@ -17,7 +17,6 @@ public partial class MainWindowViewModel : ViewModelBase
         (NoiseType.Pink, "Pink Noise"),
         (NoiseType.Blue, "Blue Noise"),
         (NoiseType.Violet, "Violet Noise"),
-        (NoiseType.Gray, "Gray Noise"),
     ];
 
     private readonly SdlNoisePlayer player;

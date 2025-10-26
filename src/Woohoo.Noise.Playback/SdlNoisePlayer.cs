@@ -9,6 +9,16 @@ using Woohoo.Sdl3;
 
 public sealed class SdlNoisePlayer
 {
+    private static readonly Dictionary<NoiseType, ISampleProvider> Generators = new()
+    {
+        { NoiseType.White, new NoiseGenerator(NoiseType.White, 1.0f) },
+        { NoiseType.Brown, new NoiseGenerator(NoiseType.Brown, 1.0f) },
+        { NoiseType.Pink, new NoiseGenerator(NoiseType.Pink, 1.0f) },
+        { NoiseType.Blue, new NoiseGenerator(NoiseType.Blue, 1.0f) },
+        { NoiseType.Violet, new NoiseGenerator(NoiseType.Violet, 1.0f) },
+        { NoiseType.Gray, new NoiseGenerator(NoiseType.Gray, 1.0f) },
+    };
+
     // We can't allocate buffer of correct length until we get a callback,
     // the amount of data that is requested varies by operating system.
     private float[] buffer = [];
@@ -68,7 +78,7 @@ public sealed class SdlNoisePlayer
             this.buffer = new float[bufferLength];
         }
 
-        NoiseGenerator.Generate(this.buffer, bufferLength, this.Noise);
+        Generators[this.Noise].Read(this.buffer, 0, bufferLength);
 
         device.PutStreamData(this.buffer, bufferLength);
     }

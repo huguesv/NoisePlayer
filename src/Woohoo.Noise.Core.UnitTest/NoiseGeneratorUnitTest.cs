@@ -17,9 +17,10 @@ public class NoiseGeneratorUnitTest
         // Arrange
         var length = 1024;
         var noise = new float[length];
+        var generator = new NoiseGenerator(noiseType, amplitude: 1.0f);
 
         // Act
-        NoiseGenerator.Generate(noise, length, noiseType);
+        generator.Read(noise, 0, length);
 
         // Assert
         noise.Should().OnlyContain(value => value >= -3.0f && value <= 3.0f);
