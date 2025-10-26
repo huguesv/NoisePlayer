@@ -11,12 +11,12 @@ public sealed class SdlNoisePlayer
 {
     private static readonly Dictionary<NoiseType, ISampleProvider> Generators = new()
     {
-        { NoiseType.White, new NoiseGenerator(NoiseType.White, 1.0f) },
-        { NoiseType.Brown, new NoiseGenerator(NoiseType.Brown, 1.0f) },
-        { NoiseType.Pink, new NoiseGenerator(NoiseType.Pink, 1.0f) },
-        { NoiseType.Blue, new NoiseGenerator(NoiseType.Blue, 1.0f) },
-        { NoiseType.Violet, new NoiseGenerator(NoiseType.Violet, 1.0f) },
-        { NoiseType.Gray, new NoiseGenerator(NoiseType.Gray, 1.0f) },
+        { NoiseType.White, new NoiseGenerator(NoiseType.White, 0.5f) },
+        { NoiseType.Brown, new NoiseGenerator(NoiseType.Brown, 2.0f) },
+        { NoiseType.Pink, new NoiseGenerator(NoiseType.Pink, 0.5f) },
+        { NoiseType.Blue, new NoiseGenerator(NoiseType.Blue, 0.5f) },
+        { NoiseType.Violet, new NoiseGenerator(NoiseType.Violet, 0.5f) },
+        { NoiseType.Gray, new NoiseGenerator(NoiseType.Gray, 0.5f) },
     };
 
     // We can't allocate buffer of correct length until we get a callback,
