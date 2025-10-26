@@ -3,6 +3,7 @@
 
 namespace Woohoo.Noise.Player.ViewModels;
 
+using System;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Woohoo.Noise.Core;
@@ -31,13 +32,23 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             Noise = Tracks[this.currentTrack].Type,
         };
+
+        this.UpdateClockText();
     }
+
+    [ObservableProperty]
+    public partial string ClockText { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial string CurrentTrackTitle { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial bool IsPlaying { get; set; }
+
+    public void UpdateClockText()
+    {
+        this.ClockText = DateTime.Now.ToString("HH:mm");
+    }
 
     [RelayCommand]
     private void PlayPause()
