@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Woohoo.Noise.Core;
 using Woohoo.Noise.Playback;
+using Woohoo.Noise.Player.Models;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
@@ -20,13 +21,31 @@ public partial class MainWindowViewModel : ViewModelBase
         (NoiseType.Violet, "Violet Noise"),
     ];
 
+    private readonly string localApplicationData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+    private readonly UserSettingsManager settingsManager;
     private readonly SdlNoisePlayer player;
 
     private int currentTrack;
+    private bool isLoading;
 
     public MainWindowViewModel()
     {
-        this.CurrentTrackTitle = Tracks[this.currentTrack].Title;
+        this.isLoading = true;
+        try
+        {
+            this.settingsManager = new UserSettingsManager(Path.Combine(this.localApplicationData, "Woohoo.Noise.Player", "LocalSettings.json"));
+            var settings = this.settingsManager.LoadSettings();
+
+            this.ShowClock = settings.ShowClock;
+            this.ShowControls = settings.ShowControls;
+            this.ShowTrackTitle = settings.ShowTrackTitle;
+            this.currentTrack = Array.FindIndex(Tracks, t => t.Type == settings.NoiseType);
+            this.CurrentTrackTitle = Tracks[this.currentTrack].Title;
+        }
+        finally
+        {
+            this.isLoading = false;
+        }
 
         this.player = new SdlNoisePlayer
         {
@@ -127,5 +146,58 @@ public partial class MainWindowViewModel : ViewModelBase
         this.CurrentTrackTitle = Tracks[this.currentTrack].Title;
 
         this.player.Noise = Tracks[this.currentTrack].Type;
+    }
+
+    private void SaveSettings()
+    {
+        var settings = new UserSettings
+        {
+            ShowClock = this.ShowClock,
+            ShowControls = this.ShowControls,
+            ShowTrackTitle = this.ShowTrackTitle,
+            NoiseType = Tracks[this.currentTrack].Type,
+        };
+
+        this.settingsManager.SaveSettings(settings);
+    }
+
+    partial void OnShowClockChanged(bool value)
+    {
+        if (this.isLoading)
+        {
+            return;
+        }
+
+        this.SaveSettings();
+    }
+
+    partial void OnShowControlsChanged(bool value)
+    {
+        if (this.isLoading)
+        {
+            return;
+        }
+
+        this.SaveSettings();
+    }
+
+    partial void OnShowTrackTitleChanged(bool value)
+    {
+        if (this.isLoading)
+        {
+            return;
+        }
+
+        this.SaveSettings();
+    }
+
+    partial void OnCurrentTrackTitleChanged(string value)
+    {
+        if (this.isLoading)
+        {
+            return;
+        }
+
+        this.SaveSettings();
     }
 }
