@@ -33,11 +33,14 @@
     <Window.ContextMenu>
         <ContextMenu>
             <MenuItem
-                Header="Full Screen"
-                ToggleType="CheckBox"
-                IsChecked="{Binding IsFullScreen}"
-                Click="MenuItem_Click"
-                />
+                Header="Play/Pause"
+                Command="{Binding PlayPauseCommand}" />
+            <MenuItem
+                Header="Previous Track"
+                Command="{Binding NextTrackCommand}" />
+            <MenuItem
+                Header="Next Track"
+                Command="{Binding NextTrackCommand}" />
             <Separator />
             <MenuItem
                 Header="Show clock"
@@ -54,6 +57,13 @@
                 ToggleType="CheckBox"
                 IsChecked="{Binding ShowTrackTitle}"
                 Command="{Binding ToggleTrackTitleCommand}" />
+            <Separator />
+            <MenuItem
+                Header="Full Screen"
+                ToggleType="CheckBox"
+                IsChecked="{Binding IsFullScreen}"
+                Click="MenuItem_Click"
+                />
         </ContextMenu>
     </Window.ContextMenu>
 
