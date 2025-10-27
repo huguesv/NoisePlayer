@@ -33,9 +33,16 @@ public sealed class UserSettingsManager
             return new UserSettings();
         }
 
-        using (var fs = new FileStream(this.settingsPath, FileMode.Open))
+        try
         {
-            return JsonSerializer.Deserialize<UserSettings>(fs) ?? new UserSettings();
+            using (var fs = new FileStream(this.settingsPath, FileMode.Open))
+            {
+                return JsonSerializer.Deserialize<UserSettings>(fs) ?? new UserSettings();
+            }
+        }
+        catch
+        {
+            return new UserSettings();
         }
     }
 }
