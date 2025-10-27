@@ -28,4 +28,33 @@ public partial class MainWindow : Window
             vm.UpdateClockText();
         }
     }
+
+    private void Window_DoubleTapped(object? sender, Avalonia.Input.TappedEventArgs e)
+    {
+        this.ToggleFullScreen();
+    }
+
+    private void Window_KeyUp(object? sender, Avalonia.Input.KeyEventArgs e)
+    {
+        if (e.Key == Avalonia.Input.Key.F11)
+        {
+            this.ToggleFullScreen();
+        }
+        else if (e.Key == Avalonia.Input.Key.Escape && this.WindowState == WindowState.FullScreen)
+        {
+            this.WindowState = WindowState.Normal;
+        }
+    }
+
+    private void ToggleFullScreen()
+    {
+        if (this.WindowState != WindowState.FullScreen)
+        {
+            this.WindowState = WindowState.FullScreen;
+        }
+        else
+        {
+            this.WindowState = WindowState.Normal;
+        }
+    }
 }

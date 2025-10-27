@@ -12,6 +12,8 @@
     d:DesignHeight="400"
     d:DesignWidth="500"
     x:DataType="vm:MainWindowViewModel"
+    DoubleTapped="Window_DoubleTapped"
+    KeyUp="Window_KeyUp"
     Icon="/Assets/avalonia-logo.ico">
 
     <Design.DataContext>
