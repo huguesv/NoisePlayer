@@ -36,7 +36,28 @@ public partial class MainWindow : Window
 
     private void Window_KeyUp(object? sender, Avalonia.Input.KeyEventArgs e)
     {
-        if (e.Key == Avalonia.Input.Key.F11)
+        if (e.Key == Avalonia.Input.Key.MediaPlayPause)
+        {
+            if (this.DataContext is MainWindowViewModel vm)
+            {
+                vm.PlayPauseCommand.Execute(null);
+            }
+        }
+        else if (e.Key == Avalonia.Input.Key.MediaPreviousTrack)
+        {
+            if (this.DataContext is MainWindowViewModel vm)
+            {
+                vm.PreviousTrackCommand.Execute(null);
+            }
+        }
+        else if (e.Key == Avalonia.Input.Key.MediaNextTrack)
+        {
+            if (this.DataContext is MainWindowViewModel vm)
+            {
+                vm.NextTrackCommand.Execute(null);
+            }
+        }
+        else if (e.Key == Avalonia.Input.Key.F11)
         {
             this.ToggleFullScreen();
         }
