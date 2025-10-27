@@ -29,27 +29,59 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
+
+    <Window.ContextMenu>
+        <ContextMenu>
+            <MenuItem
+                Header="Full Screen"
+                ToggleType="CheckBox"
+                IsChecked="{Binding IsFullScreen}"
+                Click="MenuItem_Click"
+                />
+            <Separator />
+            <MenuItem
+                Header="Show clock"
+                ToggleType="CheckBox"
+                IsChecked="{Binding ShowClock}"
+                Command="{Binding ToggleClockCommand}" />
+            <MenuItem
+                Header="Show controls"
+                ToggleType="CheckBox"
+                IsChecked="{Binding ShowControls}"
+                Command="{Binding ToggleControlsCommand}" />
+            <MenuItem
+                Header="Show track title"
+                ToggleType="CheckBox"
+                IsChecked="{Binding ShowTrackTitle}"
+                Command="{Binding ToggleTrackTitleCommand}" />
+        </ContextMenu>
+    </Window.ContextMenu>
+
     <Grid RowDefinitions="*,Auto,Auto">
 
         <TextBlock
             Grid.Row="0"
-            Margin="20,40,20,0"
+            Grid.RowSpan="3"
+            Margin="20"
             Text="{Binding ClockText}"
+            IsVisible="{Binding ShowClock}"
             FontSize="96"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"/>
 
         <TextBlock
             Grid.Row="1"
-            Margin="20,10,20,10"
+            Margin="10"
             Text="{Binding CurrentTrackTitle}"
+            IsVisible="{Binding ShowTrackTitle}"
             FontSize="24"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"/>
 
         <StackPanel
-            Margin="20,10,20,20"
+            Margin="10"
             Grid.Row="2"
+            IsVisible="{Binding ShowControls}"
             Orientation="Horizontal"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"

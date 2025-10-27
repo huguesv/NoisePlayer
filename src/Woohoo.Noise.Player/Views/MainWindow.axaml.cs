@@ -43,18 +43,26 @@ public partial class MainWindow : Window
         else if (e.Key == Avalonia.Input.Key.Escape && this.WindowState == WindowState.FullScreen)
         {
             this.WindowState = WindowState.Normal;
+            this.UpdateFullScreenState();
         }
+    }
+
+    private void MenuItem_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        this.ToggleFullScreen();
     }
 
     private void ToggleFullScreen()
     {
-        if (this.WindowState != WindowState.FullScreen)
+        this.WindowState = this.WindowState != WindowState.FullScreen ? WindowState.FullScreen : WindowState.Normal;
+        this.UpdateFullScreenState();
+    }
+
+    private void UpdateFullScreenState()
+    {
+        if (this.DataContext is MainWindowViewModel vm)
         {
-            this.WindowState = WindowState.FullScreen;
-        }
-        else
-        {
-            this.WindowState = WindowState.Normal;
+            vm.IsFullScreen = this.WindowState == WindowState.FullScreen;
         }
     }
 }

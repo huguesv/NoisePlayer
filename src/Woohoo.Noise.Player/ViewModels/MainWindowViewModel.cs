@@ -45,9 +45,39 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     public partial bool IsPlaying { get; set; }
 
+    [ObservableProperty]
+    public partial bool ShowClock { get; set; } = true;
+
+    [ObservableProperty]
+    public partial bool ShowControls { get; set; } = true;
+
+    [ObservableProperty]
+    public partial bool ShowTrackTitle { get; set; } = true;
+
+    [ObservableProperty]
+    public partial bool IsFullScreen { get; set; }
+
     public void UpdateClockText()
     {
         this.ClockText = DateTime.Now.ToString("HH:mm");
+    }
+
+    [RelayCommand]
+    private void ToggleClock()
+    {
+        this.ShowClock = !this.ShowClock;
+    }
+
+    [RelayCommand]
+    private void ToggleControls()
+    {
+        this.ShowControls = !this.ShowControls;
+    }
+
+    [RelayCommand]
+    private void ToggleTrackTitle()
+    {
+        this.ShowTrackTitle = !this.ShowTrackTitle;
     }
 
     [RelayCommand]
