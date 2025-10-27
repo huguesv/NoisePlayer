@@ -19,8 +19,6 @@ It can play the following types of noise:
 
 ![Windows Terminal](images/windows-cli.png?raw=true "Windows Terminal")
 
-For more screenshots, see the [SCREENSHOTS.md](SCREENSHOTS.md) file.
-
 ## Compatibility
 
 The application has been tested on the following operating systems, but may
@@ -39,9 +37,9 @@ You can still run it by clicking on "More info" and then "Run anyway".
 
 ## Usage (Desktop Player)
 
-1. Select **Next Track** or **Previous Track** to change the select noise type.
+1. Press **Next Track** or **Previous Track** to select the desired noise type.
 
-1. Select **Play/Pause** to start or pause playback.
+1. Press **Play/Pause** to start or pause playback.
 
 1. Press F11 or double-tap to view the player in full screen mode.
 
