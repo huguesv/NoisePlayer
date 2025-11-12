@@ -29,11 +29,6 @@ public partial class MainWindow : Window
         }
     }
 
-    private void Window_DoubleTapped(object? sender, Avalonia.Input.TappedEventArgs e)
-    {
-        this.ToggleFullScreen();
-    }
-
     private void Window_KeyUp(object? sender, Avalonia.Input.KeyEventArgs e)
     {
         if (e.Key == Avalonia.Input.Key.MediaPlayPause)
