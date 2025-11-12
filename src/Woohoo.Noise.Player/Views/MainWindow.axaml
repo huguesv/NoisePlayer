@@ -16,141 +16,152 @@
     KeyUp="Window_KeyUp"
     Icon="/Assets/avalonia-logo.ico">
 
-    <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
+  <Design.DataContext>
+    <!-- This only sets the DataContext for the previewer in an IDE,
         to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:MainWindowViewModel/>
-    </Design.DataContext>
+    <vm:MainWindowViewModel/>
+  </Design.DataContext>
 
-    <Window.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceInclude Source="avares://Woohoo.Noise.Player/Views/MediaIcons.axaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </Window.Resources>
+  <Window.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="avares://Woohoo.Noise.Player/Views/MediaIcons.axaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </Window.Resources>
 
-    <Window.ContextMenu>
-        <ContextMenu>
-            <MenuItem
-                Header="Play/Pause"
-                Command="{Binding PlayPauseCommand}" />
-            <MenuItem
-                Header="Previous Track"
-                Command="{Binding NextTrackCommand}" />
-            <MenuItem
-                Header="Next Track"
-                Command="{Binding NextTrackCommand}" />
-            <Separator />
-            <MenuItem
-                Header="Show clock"
-                ToggleType="CheckBox"
-                IsChecked="{Binding ShowClock}"
-                Command="{Binding ToggleClockCommand}" />
-            <MenuItem
-                Header="Show controls"
-                ToggleType="CheckBox"
-                IsChecked="{Binding ShowControls}"
-                Command="{Binding ToggleControlsCommand}" />
-            <MenuItem
-                Header="Show track title"
-                ToggleType="CheckBox"
-                IsChecked="{Binding ShowTrackTitle}"
-                Command="{Binding ToggleTrackTitleCommand}" />
-            <Separator />
-            <MenuItem
-                Header="Full Screen"
-                ToggleType="CheckBox"
-                IsChecked="{Binding IsFullScreen}"
-                Click="MenuItem_Click"
+  <Window.ContextMenu>
+    <ContextMenu>
+      <MenuItem
+          Header="Play/Pause"
+          Command="{Binding PlayPauseCommand}" />
+      <MenuItem
+          Header="Previous Track"
+          Command="{Binding NextTrackCommand}" />
+      <MenuItem
+          Header="Next Track"
+          Command="{Binding NextTrackCommand}" />
+      <Separator />
+      <MenuItem
+          Header="Show clock"
+          ToggleType="CheckBox"
+          IsChecked="{Binding ShowClock}"
+          Command="{Binding ToggleClockCommand}" />
+      <MenuItem
+          Header="Show controls"
+          ToggleType="CheckBox"
+          IsChecked="{Binding ShowControls}"
+          Command="{Binding ToggleControlsCommand}" />
+      <MenuItem
+          Header="Show track title"
+          ToggleType="CheckBox"
+          IsChecked="{Binding ShowTrackTitle}"
+          Command="{Binding ToggleTrackTitleCommand}" />
+      <Separator />
+      <MenuItem
+          Header="Full Screen"
+          ToggleType="CheckBox"
+          IsChecked="{Binding IsFullScreen}"
+          Click="MenuItem_Click"
                 />
-        </ContextMenu>
-    </Window.ContextMenu>
+    </ContextMenu>
+  </Window.ContextMenu>
 
-    <Grid RowDefinitions="*,Auto,Auto">
+  <Window.Styles>
+    <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="BorderBrush" Value="{DynamicResource CaptionButtonBorderBrush}" />
+    </Style>
+    <Style Selector="Button">
+      <Setter Property="CornerRadius" Value="10" />
+    </Style>
+  </Window.Styles>
 
-        <TextBlock
-            Grid.Row="0"
-            Grid.RowSpan="3"
-            Margin="20"
-            Text="{Binding ClockText}"
-            IsVisible="{Binding ShowClock}"
-            FontSize="96"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"/>
+  <Grid RowDefinitions="*,Auto,Auto">
 
-        <TextBlock
-            Grid.Row="1"
-            Margin="10"
-            Text="{Binding CurrentTrackTitle}"
-            IsVisible="{Binding ShowTrackTitle}"
-            FontSize="24"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"/>
+    <TextBlock
+        Grid.Row="0"
+        Grid.RowSpan="3"
+        Margin="20"
+        Text="{Binding ClockText}"
+        IsVisible="{Binding ShowClock}"
+        FontSize="96"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center"/>
 
-        <StackPanel
-            Margin="10"
-            Grid.Row="2"
-            IsVisible="{Binding ShowControls}"
-            Orientation="Horizontal"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Spacing="10">
+    <TextBlock
+        Grid.Row="1"
+        Margin="10"
+        Text="{Binding CurrentTrackTitle}"
+        IsVisible="{Binding ShowTrackTitle}"
+        FontSize="24"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center"/>
 
-            <Button
-                MinWidth="40"
-                MinHeight="40"
-                Margin="5"
-                HorizontalContentAlignment="Center"
-                VerticalContentAlignment="Center"
-                AutomationProperties.Name="Previous"
-                Command="{Binding PreviousTrackCommand}"
-                ToolTip.Tip="Previous Track">
-                <Canvas Width="32" Height="32">
-                    <StaticResource ResourceKey="Previous" />
-                </Canvas>
-            </Button>
+    <StackPanel
+        Margin="10"
+        Grid.Row="2"
+        IsVisible="{Binding ShowControls}"
+        Orientation="Horizontal"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center">
 
-            <Button
-                MinWidth="40"
-                MinHeight="40"
-                Margin="5"
-                HorizontalContentAlignment="Center"
-                VerticalContentAlignment="Center"
-                AutomationProperties.Name="Play/Pause"
-                Command="{Binding PlayPauseCommand}"
-                ToolTip.Tip="Play/Pause">
-                <Grid>
-                    <Canvas
-                        Width="32"
-                        Height="32"
-                        IsVisible="{Binding !IsPlaying}">
-                        <StaticResource ResourceKey="Play" />
-                    </Canvas>
-                    <Canvas
-                        Width="32"
-                        Height="32"
-                        IsVisible="{Binding IsPlaying}">
-                        <StaticResource ResourceKey="Stop" />
-                    </Canvas>
-                </Grid>
-            </Button>
+      <Button
+          Margin="4"
+          HorizontalContentAlignment="Center"
+          VerticalContentAlignment="Center"
+          AutomationProperties.Name="Previous"
+          Command="{Binding PreviousTrackCommand}"
+          ToolTip.Tip="Previous Track">
+        <Viewbox Width="24" Height="24">
+          <Canvas Width="32" Height="32">
+            <StaticResource ResourceKey="Previous" />
+          </Canvas>
+        </Viewbox>
+      </Button>
 
-            <Button
-                MinWidth="40"
-                MinHeight="40"
-                Margin="5"
-                HorizontalContentAlignment="Center"
-                VerticalContentAlignment="Center"
-                AutomationProperties.Name="Next"
-                Command="{Binding NextTrackCommand}"
-                ToolTip.Tip="Next Track">
-                <Canvas Width="32" Height="32">
-                    <StaticResource ResourceKey="Next" />
-                </Canvas>
-            </Button>
+      <Button
+          Margin="4"
+          HorizontalContentAlignment="Center"
+          VerticalContentAlignment="Center"
+          AutomationProperties.Name="Play/Pause"
+          Command="{Binding PlayPauseCommand}"
+          CornerRadius="15"
+          ToolTip.Tip="Play/Pause">
+        <Grid>
+          <Viewbox
+              Width="40"
+              Height="40"
+              IsVisible="{Binding !IsPlaying, Mode=OneWay}">
+            <Canvas Width="32" Height="32">
+              <StaticResource ResourceKey="Play" />
+            </Canvas>
+          </Viewbox>
+          <Viewbox
+              Width="40"
+              Height="40"
+              IsVisible="{Binding IsPlaying, Mode=OneWay}">
+            <Canvas Width="32" Height="32">
+              <StaticResource ResourceKey="Pause" />
+            </Canvas>
+          </Viewbox>
+        </Grid>
+      </Button>
 
-        </StackPanel>
-    </Grid>
+      <Button
+          Margin="4"
+          HorizontalContentAlignment="Center"
+          VerticalContentAlignment="Center"
+          AutomationProperties.Name="Next"
+          Command="{Binding NextTrackCommand}"
+          ToolTip.Tip="Next Track">
+        <Viewbox Width="24" Height="24">
+          <Canvas Width="32" Height="32">
+            <StaticResource ResourceKey="Next" />
+          </Canvas>
+        </Viewbox>
+      </Button>
+
+    </StackPanel>
+  </Grid>
 
 </Window>
