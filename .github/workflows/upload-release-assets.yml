@@ -12,8 +12,10 @@ jobs:
         dotnet-runtime: [win-x64, win-arm64, win-x86, linux-x64, linux-arm64, osx-x64, osx-arm64]
     runs-on: ubuntu-latest
     env:
-      DOTNET_ACTION_VERSION: '10.0.x'
-      DOTNET_VERSION: 'net10.0'
+      dotnetActionVersion: '10.0.x'
+      dotnetBuildVersion: 'net10.0'
+      desktopBinariesName: Woohoo.Noise.Player-${{ github.event.release.tag_name }}-${{ matrix.dotnet-runtime }}
+      consoleBinariesName: Woohoo.Noise.Player.Cli-${{ github.event.release.tag_name }}-${{ matrix.dotnet-runtime }}
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -21,29 +23,35 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: ${{ env.DOTNET_ACTION_VERSION }}
+        dotnet-version: ${{ env.dotnetActionVersion }}
 
-    - name: Build Desktop App
-      uses: huguesv/dotnet-publish-upload-action@main
+    - name: Desktop App - Build / Publish
+      working-directory: src
+      run: dotnet publish Woohoo.Noise.Player/Woohoo.Noise.Player.csproj -f ${{ env.dotnetBuildVersion }} -r ${{ matrix.dotnet-runtime }} -c Release --self-contained -p:DebugType=None -p:DebugSymbols=False
+
+    - name: Console App - Build / Publish
+      working-directory: src
+      run: dotnet publish Woohoo.Noise.Player.Cli/Woohoo.Noise.Player.Cli.csproj -f ${{ env.dotnetBuildVersion }} -r ${{ matrix.dotnet-runtime }} -c Release --self-contained -p:DebugType=None -p:DebugSymbols=False
+
+    - name: Desktop App - Zip binaries
+      working-directory: src/Woohoo.Noise.Player/bin/Release/${{ env.dotnetBuildVersion }}/${{ matrix.dotnet-runtime }}/publish
+      run: zip -r ${{ github.workspace }}/src/Woohoo.Noise.Player/bin/Release/${{ env.dotnetBuildVersion }}/${{ env.desktopBinariesName }}.zip *
+
+    - name: Console App - Zip binaries
+      working-directory: src/Woohoo.Noise.Player.Cli/bin/Release/${{ env.dotnetBuildVersion }}/${{ matrix.dotnet-runtime }}/publish
+      run: zip -r ${{ github.workspace }}/src/Woohoo.Noise.Player.Cli/bin/Release/${{ env.dotnetBuildVersion }}/${{ env.consoleBinariesName }}.zip *
+
+    - name: Desktop App - Upload binaries artifact
+      uses: actions/upload-artifact@v4
       with:
-        working-dir: src
-        project-relative-path: Woohoo.Noise.Player/Woohoo.Noise.Player.csproj
-        dotnet-version: ${{ env.DOTNET_VERSION }}
-        dotnet-runtime: ${{ matrix.dotnet-runtime }}
-        publish-absolute-folder: ${{ github.workspace }}/src/Woohoo.Noise.Player/bin/Release/${{ env.DOTNET_VERSION }}/${{ matrix.dotnet-runtime }}/publish
-        artifact-name: desktop-${{ matrix.dotnet-runtime }}
-        artifact-file-name: Woohoo.Noise.Player-${{ github.event.release.tag_name }}-${{ matrix.dotnet-runtime }}
-        
-    - name: Build Console App
-      uses: huguesv/dotnet-publish-upload-action@main
+        name: desktop-${{ matrix.dotnet-runtime }}
+        path: src/Woohoo.Noise.Player/bin/Release/${{ env.dotnetBuildVersion }}/${{ env.desktopBinariesName }}.zip
+
+    - name: Console App - Upload binaries artifact
+      uses: actions/upload-artifact@v4
       with:
-        working-dir: src
-        project-relative-path: Woohoo.Noise.Player.Cli/Woohoo.Noise.Player.Cli.csproj
-        dotnet-version: ${{ env.DOTNET_VERSION }}
-        dotnet-runtime: ${{ matrix.dotnet-runtime }}
-        publish-absolute-folder: ${{ github.workspace }}/src/Woohoo.Noise.Player.Cli/bin/Release/${{ env.DOTNET_VERSION }}/${{ matrix.dotnet-runtime }}/publish
-        artifact-name: console-${{ matrix.dotnet-runtime }}
-        artifact-file-name: Woohoo.Noise.Player.Cli-${{ github.event.release.tag_name }}-${{ matrix.dotnet-runtime }}
+        name: console-${{ matrix.dotnet-runtime }}
+        path: src/Woohoo.Noise.Player.Cli/bin/Release/${{ env.dotnetBuildVersion }}/${{ env.consoleBinariesName }}.zip
 
   release:
     name: Upload Release Assets
