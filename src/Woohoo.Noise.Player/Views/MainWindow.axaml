@@ -5,162 +5,157 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="using:Woohoo.Noise.Player.ViewModels"
-    mc:Ignorable="d"
     Title="Noise Player"
     Width="500"
     Height="400"
     d:DesignHeight="400"
     d:DesignWidth="500"
     x:DataType="vm:MainWindowViewModel"
+    Icon="/Assets/avalonia-logo.ico"
     KeyUp="Window_KeyUp"
-    Icon="/Assets/avalonia-logo.ico">
+    mc:Ignorable="d">
 
-  <Design.DataContext>
-    <!-- This only sets the DataContext for the previewer in an IDE,
-        to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-    <vm:MainWindowViewModel/>
-  </Design.DataContext>
+    <Design.DataContext>
+        <!--
+            This only sets the DataContext for the previewer in an IDE,
+            to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs)
+        -->
+        <vm:MainWindowViewModel />
+    </Design.DataContext>
 
-  <Window.Resources>
-    <ResourceDictionary>
-      <ResourceDictionary.MergedDictionaries>
-        <ResourceInclude Source="avares://Woohoo.Noise.Player/Views/MediaIcons.axaml" />
-      </ResourceDictionary.MergedDictionaries>
-    </ResourceDictionary>
-  </Window.Resources>
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="avares://Woohoo.Noise.Player/Views/MediaIcons.axaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
 
-  <Window.ContextMenu>
-    <ContextMenu>
-      <MenuItem
-          Header="Play/Pause"
-          Command="{Binding PlayPauseCommand}" />
-      <MenuItem
-          Header="Previous Track"
-          Command="{Binding NextTrackCommand}" />
-      <MenuItem
-          Header="Next Track"
-          Command="{Binding NextTrackCommand}" />
-      <Separator />
-      <MenuItem
-          Header="Show clock"
-          ToggleType="CheckBox"
-          IsChecked="{Binding ShowClock}"
-          Command="{Binding ToggleClockCommand}" />
-      <MenuItem
-          Header="Show controls"
-          ToggleType="CheckBox"
-          IsChecked="{Binding ShowControls}"
-          Command="{Binding ToggleControlsCommand}" />
-      <MenuItem
-          Header="Show track title"
-          ToggleType="CheckBox"
-          IsChecked="{Binding ShowTrackTitle}"
-          Command="{Binding ToggleTrackTitleCommand}" />
-      <Separator />
-      <MenuItem
-          Header="Full Screen"
-          ToggleType="CheckBox"
-          IsChecked="{Binding IsFullScreen}"
-          Click="MenuItem_Click"
-                />
-    </ContextMenu>
-  </Window.ContextMenu>
+    <Window.ContextMenu>
+        <ContextMenu>
+            <MenuItem Command="{Binding PlayPauseCommand}" Header="Play/Pause" />
+            <MenuItem Command="{Binding NextTrackCommand}" Header="Previous Track" />
+            <MenuItem Command="{Binding NextTrackCommand}" Header="Next Track" />
+            <Separator />
+            <MenuItem
+                Command="{Binding ToggleClockCommand}"
+                Header="Show clock"
+                IsChecked="{Binding ShowClock}"
+                ToggleType="CheckBox" />
+            <MenuItem
+                Command="{Binding ToggleControlsCommand}"
+                Header="Show controls"
+                IsChecked="{Binding ShowControls}"
+                ToggleType="CheckBox" />
+            <MenuItem
+                Command="{Binding ToggleTrackTitleCommand}"
+                Header="Show track title"
+                IsChecked="{Binding ShowTrackTitle}"
+                ToggleType="CheckBox" />
+            <Separator />
+            <MenuItem
+                Click="MenuItem_Click"
+                Header="Full Screen"
+                IsChecked="{Binding IsFullScreen}"
+                ToggleType="CheckBox" />
+        </ContextMenu>
+    </Window.ContextMenu>
 
-  <Window.Styles>
-    <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-      <Setter Property="BorderBrush" Value="{DynamicResource CaptionButtonBorderBrush}" />
-    </Style>
-    <Style Selector="Button">
-      <Setter Property="CornerRadius" Value="10" />
-    </Style>
-  </Window.Styles>
+    <Window.Styles>
+        <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="BorderBrush" Value="{DynamicResource CaptionButtonBorderBrush}" />
+        </Style>
+        <Style Selector="Button">
+            <Setter Property="CornerRadius" Value="10" />
+        </Style>
+    </Window.Styles>
 
-  <Grid RowDefinitions="*,Auto,Auto">
+    <Grid RowDefinitions="*,Auto,Auto">
 
-    <TextBlock
-        Grid.Row="0"
-        Grid.RowSpan="3"
-        Margin="20"
-        Text="{Binding ClockText}"
-        IsVisible="{Binding ShowClock}"
-        FontSize="96"
-        HorizontalAlignment="Center"
-        VerticalAlignment="Center"/>
+        <TextBlock
+            Grid.Row="0"
+            Grid.RowSpan="3"
+            Margin="20"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            FontSize="96"
+            IsVisible="{Binding ShowClock}"
+            Text="{Binding ClockText}" />
 
-    <TextBlock
-        Grid.Row="1"
-        Margin="10"
-        Text="{Binding CurrentTrackTitle}"
-        IsVisible="{Binding ShowTrackTitle}"
-        FontSize="24"
-        HorizontalAlignment="Center"
-        VerticalAlignment="Center"/>
+        <TextBlock
+            Grid.Row="1"
+            Margin="10"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            FontSize="24"
+            IsVisible="{Binding ShowTrackTitle}"
+            Text="{Binding CurrentTrackTitle}" />
 
-    <StackPanel
-        Margin="10"
-        Grid.Row="2"
-        IsVisible="{Binding ShowControls}"
-        Orientation="Horizontal"
-        HorizontalAlignment="Center"
-        VerticalAlignment="Center">
+        <StackPanel
+            Grid.Row="2"
+            Margin="10"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            IsVisible="{Binding ShowControls}"
+            Orientation="Horizontal">
 
-      <Button
-          Margin="4"
-          HorizontalContentAlignment="Center"
-          VerticalContentAlignment="Center"
-          AutomationProperties.Name="Previous"
-          Command="{Binding PreviousTrackCommand}"
-          ToolTip.Tip="Previous Track">
-        <Viewbox Width="24" Height="24">
-          <Canvas Width="32" Height="32">
-            <StaticResource ResourceKey="Previous" />
-          </Canvas>
-        </Viewbox>
-      </Button>
+            <Button
+                Margin="4"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                AutomationProperties.Name="Previous"
+                Command="{Binding PreviousTrackCommand}"
+                ToolTip.Tip="Previous Track">
+                <Viewbox Width="24" Height="24">
+                    <Canvas Width="32" Height="32">
+                        <StaticResource ResourceKey="Previous" />
+                    </Canvas>
+                </Viewbox>
+            </Button>
 
-      <Button
-          Margin="4"
-          HorizontalContentAlignment="Center"
-          VerticalContentAlignment="Center"
-          AutomationProperties.Name="Play/Pause"
-          Command="{Binding PlayPauseCommand}"
-          CornerRadius="15"
-          ToolTip.Tip="Play/Pause">
-        <Grid>
-          <Viewbox
-              Width="40"
-              Height="40"
-              IsVisible="{Binding !IsPlaying, Mode=OneWay}">
-            <Canvas Width="32" Height="32">
-              <StaticResource ResourceKey="Play" />
-            </Canvas>
-          </Viewbox>
-          <Viewbox
-              Width="40"
-              Height="40"
-              IsVisible="{Binding IsPlaying, Mode=OneWay}">
-            <Canvas Width="32" Height="32">
-              <StaticResource ResourceKey="Pause" />
-            </Canvas>
-          </Viewbox>
-        </Grid>
-      </Button>
+            <Button
+                Margin="4"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                AutomationProperties.Name="Play/Pause"
+                Command="{Binding PlayPauseCommand}"
+                CornerRadius="15"
+                ToolTip.Tip="Play/Pause">
+                <Grid>
+                    <Viewbox
+                        Width="40"
+                        Height="40"
+                        IsVisible="{Binding !IsPlaying, Mode=OneWay}">
+                        <Canvas Width="32" Height="32">
+                            <StaticResource ResourceKey="Play" />
+                        </Canvas>
+                    </Viewbox>
+                    <Viewbox
+                        Width="40"
+                        Height="40"
+                        IsVisible="{Binding IsPlaying, Mode=OneWay}">
+                        <Canvas Width="32" Height="32">
+                            <StaticResource ResourceKey="Pause" />
+                        </Canvas>
+                    </Viewbox>
+                </Grid>
+            </Button>
 
-      <Button
-          Margin="4"
-          HorizontalContentAlignment="Center"
-          VerticalContentAlignment="Center"
-          AutomationProperties.Name="Next"
-          Command="{Binding NextTrackCommand}"
-          ToolTip.Tip="Next Track">
-        <Viewbox Width="24" Height="24">
-          <Canvas Width="32" Height="32">
-            <StaticResource ResourceKey="Next" />
-          </Canvas>
-        </Viewbox>
-      </Button>
+            <Button
+                Margin="4"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                AutomationProperties.Name="Next"
+                Command="{Binding NextTrackCommand}"
+                ToolTip.Tip="Next Track">
+                <Viewbox Width="24" Height="24">
+                    <Canvas Width="32" Height="32">
+                        <StaticResource ResourceKey="Next" />
+                    </Canvas>
+                </Viewbox>
+            </Button>
 
-    </StackPanel>
-  </Grid>
+        </StackPanel>
+    </Grid>
 
 </Window>
