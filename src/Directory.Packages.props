@@ -4,10 +4,10 @@
     <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Avalonia" Version="11.3.10" />
-    <PackageVersion Include="Avalonia.Desktop" Version="11.3.10" />
-    <PackageVersion Include="Avalonia.Themes.Fluent" Version="11.3.10" />
-    <PackageVersion Include="Avalonia.Fonts.Inter" Version="11.3.10" />
+    <PackageVersion Include="Avalonia" Version="11.3.11" />
+    <PackageVersion Include="Avalonia.Desktop" Version="11.3.11" />
+    <PackageVersion Include="Avalonia.Themes.Fluent" Version="11.3.11" />
+    <PackageVersion Include="Avalonia.Fonts.Inter" Version="11.3.11" />
     <PackageVersion Include="Avalonia.Diagnostics" Version="11.3.10" />
     <PackageVersion Include="AwesomeAssertions" Version="9.3.0" />
     <PackageVersion Include="AwesomeAssertions.Analyzers" Version="9.0.8" />
@@ -24,6 +24,6 @@
     <PackageVersion Include="Woohoo.Platform.Windows" Version="0.1.0" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
     <PackageVersion Include="xunit.v3" Version="3.1.0" />
-    <PackageVersion Include="xunit.v3.mtp-v2" Version="3.2.1" />
+    <PackageVersion Include="xunit.v3.mtp-v2" Version="3.2.2" />
   </ItemGroup>
 </Project>
