@@ -1,0 +1,57 @@
+name: Build All
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-macos-avalonia:
+    uses: ./.github/workflows/generic-build-mac.yml
+    with:
+      tag-name: ${{ github.ref_name }}
+      icon-path: src/Woohoo.Noise.Player/Assets/app-logo.png
+      project-file-path: Woohoo.Noise.Player/Woohoo.Noise.Player.csproj
+      app-short-name: NoisePlayer
+      app-display-name: 'Noise Player'
+      app-executable-name: Woohoo.Noise.Player
+      bundle-identifier: com.huguesvalois.noiseplayer
+    secrets: inherit
+
+  build-windows-avalonia:
+    uses: ./.github/workflows/generic-build-windows.yml
+    with:
+      tag-name: ${{ github.ref_name }}
+      project-file-path: Woohoo.Noise.Player/Woohoo.Noise.Player.csproj
+      app-executable-name: Woohoo.Noise.Player
+    secrets: inherit
+
+  build-windows-cli:
+    uses: ./.github/workflows/generic-build-windows.yml
+    with:
+      tag-name: ${{ github.ref_name }}
+      project-file-path: Woohoo.Noise.Player.Cli/Woohoo.Noise.Player.Cli.csproj
+      app-executable-name: Woohoo.Noise.Player.Cli
+    secrets: inherit
+
+  build-linux-avalonia:
+    uses: ./.github/workflows/generic-build-linux.yml
+    with:
+      tag-name: ${{ github.ref_name }}
+      project-file-path: Woohoo.Noise.Player/Woohoo.Noise.Player.csproj
+      app-executable-name: Woohoo.Noise.Player
+    secrets: inherit
+
+  build-linux-cli:
+    uses: ./.github/workflows/generic-build-linux.yml
+    with:
+      tag-name: ${{ github.ref_name }}
+      project-file-path: Woohoo.Noise.Player.Cli/Woohoo.Noise.Player.Cli.csproj
+      app-executable-name: Woohoo.Noise.Player.Cli
+    secrets: inherit

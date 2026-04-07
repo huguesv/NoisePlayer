@@ -21,6 +21,7 @@
     <Product>Noise Player</Product>
     <Version>0.5.0.0</Version>
     <FileVersion>0.5.0.0</FileVersion>
+    <ApplicationVersion>0.5.0</ApplicationVersion>
   </PropertyGroup>
 
   <ItemGroup>
