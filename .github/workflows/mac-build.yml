@@ -104,7 +104,7 @@ jobs:
         cp -r NoisePlayer.app dmg-stage/
         ln -s /Applications dmg-stage/Applications
         
-        hdiutil create -volname "Noise Player \
+        hdiutil create -volname "Noise Player" \
           -srcfolder dmg-stage \
           -ov -format UDBZ \
           osx-arm64.dmg
