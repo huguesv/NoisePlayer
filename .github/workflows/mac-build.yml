@@ -1,0 +1,139 @@
+name: Mac Build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build
+    runs-on: macos-latest
+    env:
+      dotnetActionVersion: '10.0.x'
+      dotnetBuildVersion: 'net10.0'
+      binariesName: Woohoo.Noise.Player-osx-arm64
+      target: osx-arm64
+      APP_VERSION: '0.5.0'
+      ICON_SRC: src/Woohoo.Noise.Player/Assets/app-logo.png
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.dotnetActionVersion }}
+
+    - name: Build / Publish
+      working-directory: src
+      run: dotnet publish Woohoo.Noise.Player/Woohoo.Noise.Player.csproj -f ${{ env.dotnetBuildVersion }} -r ${{ env.target }} -c Release --self-contained -p:DebugType=None -p:DebugSymbols=False
+
+    - name: Zip binaries
+      working-directory: src/Woohoo.Noise.Player/bin/Release/${{ env.dotnetBuildVersion }}/${{ env.target }}/publish
+      run: zip -r ${{ github.workspace }}/src/Woohoo.Noise.Player/bin/Release/${{ env.dotnetBuildVersion }}/${{ env.binariesName }}.zip *
+
+    - name: Upload binaries artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.dotnet-runtime.target }}
+        path: src/Woohoo.Noise.Player/bin/Release/${{ env.dotnetBuildVersion }}/${{ env.binariesName }}.zip
+
+    - name: Generate macOS icon
+      run: |
+        ICONSET="AppIcon.iconset"
+        mkdir -p "$ICONSET"
+        sips -z 16 16     ${{ env.ICON_SRC }} --out "$ICONSET/icon_16x16.png"      > /dev/null
+        sips -z 32 32     ${{ env.ICON_SRC }} --out "$ICONSET/icon_16x16@2x.png"   > /dev/null
+        sips -z 32 32     ${{ env.ICON_SRC }} --out "$ICONSET/icon_32x32.png"      > /dev/null
+        sips -z 64 64     ${{ env.ICON_SRC }} --out "$ICONSET/icon_32x32@2x.png"   > /dev/null
+        sips -z 128 128   ${{ env.ICON_SRC }} --out "$ICONSET/icon_128x128.png"    > /dev/null
+        sips -z 256 256   ${{ env.ICON_SRC }} --out "$ICONSET/icon_128x128@2x.png" > /dev/null
+        sips -z 256 256   ${{ env.ICON_SRC }} --out "$ICONSET/icon_256x256.png"    > /dev/null
+        sips -z 512 512   ${{ env.ICON_SRC }} --out "$ICONSET/icon_256x256@2x.png" > /dev/null
+        sips -z 512 512   ${{ env.ICON_SRC }} --out "$ICONSET/icon_512x512.png"    > /dev/null
+        sips -z 1024 1024 ${{ env.ICON_SRC }} --out "$ICONSET/icon_512x512@2x.png" > /dev/null
+        iconutil -c icns "$ICONSET" -o AppIcon.icns
+        rm -rf "$ICONSET"
+
+    - name: Build MacOS bundle
+      run: |
+        APP="NoisePlayer.app"
+        mkdir -p "$APP/Contents/MacOS"
+        mkdir -p "$APP/Contents/Resources"
+
+        cp src/Woohoo.Noise.Player/bin/Release/${{ env.dotnetBuildVersion }}/${{ env.target }}/publish/* "$APP/Contents/MacOS/"
+        chmod +x "$APP/Contents/MacOS/Woohoo.Noise.Player"
+        cp AppIcon.icns "$APP/Contents/Resources/AppIcon.icns"
+
+        cat > "$APP/Contents/Info.plist" << 'PLIST'
+        <?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+        <plist version="1.0">
+        <dict>
+          <key>CFBundleName</key>
+          <string>Noise Player</string>
+          <key>CFBundleDisplayName</key>
+          <string>Noise Player</string>
+          <key>CFBundleIdentifier</key>
+          <string>com.huguesvalois.noiseplayer</string>
+          <key>CFBundleVersion</key>
+          <string>${{ env.APP_VERSION }}</string>
+          <key>CFBundleShortVersionString</key>
+          <string>${{ env.APP_VERSION }}</string>
+          <key>CFBundleExecutable</key>
+          <string>Woohoo.Noise.Player</string>
+          <key>CFBundleIconFile</key>
+          <string>AppIcon</string>
+          <key>CFBundlePackageType</key>
+          <string>APPL</string>
+          <key>LSMinimumSystemVersion</key>
+          <string>10.15</string>
+          <key>NSHighResolutionCapable</key>
+          <true/>
+        </dict>
+        </plist>
+        PLIST
+        
+    - name: Display MacOS bundle folder contents
+      run: ls -R NoisePlayer.app
+
+    - name: Create PKG Installer
+      run: |
+        mkdir -p pkg-root/Applications
+        cp -r NoisePlayer.app pkg-root/Applications/
+        
+        pkgbuild \
+          --root pkg-root \
+          --identifier com.huguesvalois.noiseplayer \
+          --version ${{ env.APP_VERSION }} \
+          --install-location / \
+          osx-arm64-Installer.pkg
+
+    - name: Create DMG
+      run: |
+        mkdir -p dmg-stage
+        cp -r NoisePlayer.app dmg-stage/
+        ln -s /Applications dmg-stage/Applications
+        
+        hdiutil create -volname "Noise Player \
+          -srcfolder dmg-stage \
+          -ov -format UDBZ \
+          osx-arm64.dmg
+
+    - name: Upload PKG Installer
+      uses: actions/upload-artifact@v4
+      with:
+        name: osx-arm64-pkg
+        path: osx-arm64-Installer.pkg
+
+    - name: Upload DMG
+      uses: actions/upload-artifact@v4
+      with:
+        name: osx-arm64-dmg
+        path: osx-arm64.dmg
+
+    - name: Upload .app Bundle
+      uses: actions/upload-artifact@v4
+      with:
+        name: osx-arm64-app
+        path: NoisePlayer.app/
+        
