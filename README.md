@@ -24,16 +24,27 @@ It can play the following types of noise:
 The application has been tested on the following operating systems, but may
 work on earlier versions.
 
-- Windows 11 24H2 (x64, ARM64)
-- MacOS 15.3 (Apple Silicon)
-- Ubuntu 24.10 (x64, ARM64)
+- Windows 11 25H2 (x64, ARM64)
+- MacOS 26.3 (Apple Silicon)
+- Ubuntu 25.10 (x64, ARM64)
 
 ## Releases
 
 Download the [latest release here](https://github.com/huguesv/NoisePlayer/releases/latest).
 
 Windows may prevent you from launching the application, since it is not signed.
-You can still run it by clicking on "More info" and then "Run anyway".
+- You can still run it by clicking on "More info" and then "Run anyway".
+
+MacOS may prevent you from launching the application, since it is not signed.
+- If installing with the package installer, then open **System Settings**,
+  **Privacy & Security**, then scroll down to find **Noise Player** and
+  select **Open Anyway**.
+- If installing by opening the disc image and drag & dropping into the
+  **Applications** folder, then run the following commands from a **Terminal**.
+  ```
+  cd /Applications
+  xattr -d com.apple.quarantine NoisePlayer.app
+  ```
 
 ## Usage (Desktop Player)
 
@@ -82,7 +93,7 @@ dotnet test
 
 This software is licensed under the MIT License. See the [LICENSE](LICENSE) file.
 
-Copyright (c) 2025 Hugues Valois. All rights reserved.
+Copyright (c) 2025-2026 Hugues Valois. All rights reserved.
 
 This software uses the following libraries:
 
@@ -95,3 +106,4 @@ This software uses the following libraries:
 This software uses assets from:
 
 - [Vidstack](https://www.vidstack.io/)
+- [Wave icons created by Freepik - Flaticon](https://www.flaticon.com/free-icons/wave)
