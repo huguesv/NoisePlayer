@@ -70,6 +70,39 @@
         </Style>
     </Window.Styles>
 
+    <NativeMenu.Menu>
+        <NativeMenu>
+            <NativeMenuItem Header="Playback">
+                <NativeMenu>
+                    <NativeMenuItem Command="{Binding PlayPauseCommand, Mode=OneWay}" Header="Play / Pause" />
+                    <NativeMenuItemSeparator />
+                    <NativeMenuItem Command="{Binding PreviousTrackCommand, Mode=OneWay}" Header="Previous Track" />
+                    <NativeMenuItem Command="{Binding NextTrackCommand, Mode=OneWay}" Header="Next Track" />
+                </NativeMenu>
+            </NativeMenuItem>
+            <NativeMenuItem Header="View">
+                <NativeMenu>
+                    <NativeMenuItem
+                        Command="{Binding ToggleClockCommand}"
+                        Header="Show clock"
+                        IsChecked="{Binding ShowClock}"
+                        ToggleType="CheckBox" />
+                    <NativeMenuItem
+                        Command="{Binding ToggleControlsCommand}"
+                        Header="Show controls"
+                        IsChecked="{Binding ShowControls}"
+                        ToggleType="CheckBox" />
+                    <NativeMenuItem
+                        Command="{Binding ToggleTrackTitleCommand}"
+                        Header="Show track title"
+                        IsChecked="{Binding ShowTrackTitle}"
+                        ToggleType="CheckBox" />
+                    <NativeMenuItemSeparator />
+                </NativeMenu>
+            </NativeMenuItem>
+        </NativeMenu>
+    </NativeMenu.Menu>
+
     <Grid RowDefinitions="*,Auto,Auto">
 
         <TextBlock
