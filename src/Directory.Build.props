@@ -17,11 +17,11 @@
 
   <PropertyGroup>
     <Company>Hugues Valois</Company>
-    <Copyright>Copyright (c) Hugues Valois 2025</Copyright>
+    <Copyright>Copyright (c) Hugues Valois 2025-2026</Copyright>
     <Product>Noise Player</Product>
-    <Version>0.5.0.0</Version>
-    <FileVersion>0.5.0.0</FileVersion>
-    <ApplicationVersion>0.5.0</ApplicationVersion>
+    <Version>0.6.0.0</Version>
+    <FileVersion>0.6.0.0</FileVersion>
+    <ApplicationVersion>0.6.0</ApplicationVersion>
   </PropertyGroup>
 
   <ItemGroup>
